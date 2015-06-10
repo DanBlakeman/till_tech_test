@@ -14,7 +14,7 @@ describe("Till", function () {
   it("adds items to currentOrder list with quantity", function () {
     till.add("Cafe Latte");
     till.add("Cafe Latte");
-    expect(till.currentOrder).toEqual({"Cafe Latte": 2});
+    expect(till._currentOrder).toEqual({"Cafe Latte": 2});
   });
 
   it("totals multiple items", function () {
@@ -25,7 +25,7 @@ describe("Till", function () {
 
   it("calculates correct amount of tax", function () {
     till.add("Cafe Latte");
-    expect(till.getTax()).toEqual('0.41');
+    expect(till._getTax()).toEqual('0.41');
   });
 
   it("must display line totals correctly", function () {
@@ -33,7 +33,7 @@ describe("Till", function () {
     till.add("Cafe Latte");
     till.add("Blueberry Muffin");
     till.add("Choc Mudcake");
-    expect(till.getLineTotals()).toMatch('Cafe Latte 2 x 4.75\nBlueberry Muffin 1 x 4.05\nChoc Mudcake 1 x 6.40\n');
+    expect(till._getLineTotals()).toMatch('Cafe Latte 2 x 4.75\nBlueberry Muffin 1 x 4.05\nChoc Mudcake 1 x 6.40\n');
   });
 
   it("must be able to take payment and calculate change correctly", function () {
@@ -51,9 +51,9 @@ describe("Till", function () {
   });
 
   it("has an option to turn on muffin discount", function() {
-    expect(till.applyMuffinDiscount).toEqual(false);
+    expect(till._applyMuffinDiscount).toEqual(false);
     till.muffinDiscount();
-    expect(till.applyMuffinDiscount).toEqual(true);
+    expect(till._applyMuffinDiscount).toEqual(true);
   });
 
   it("is able to give 5% discount on orders over 50", function () {
@@ -66,9 +66,9 @@ describe("Till", function () {
   });
 
   it("has an option to turn on over 50 discount", function() {
-    expect(till.applyOver50Discount).toEqual(false);
+    expect(till._applyOver50Discount).toEqual(false);
     till.over50Discount();
-    expect(till.applyOver50Discount).toEqual(true);
+    expect(till._applyOver50Discount).toEqual(true);
   });
 
 });

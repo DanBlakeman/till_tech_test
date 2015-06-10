@@ -1,7 +1,4 @@
-var priceList;
-var Till;
-
-priceList = [
+var priceList = [
   {
     "shopName": "The Coffee Connection",
     "address": "123 Lakeside Way",
@@ -29,87 +26,24 @@ priceList = [
 ];
 
 
-Till = function () {
-  this.priceList = priceList;
-  this.taxRate = 8.64;
-  this.currentOrder = {};
-  this.applyMuffinDiscount = false;
-  this.applyOver50Discount = false;
+var Till = function () {
+  this._priceList = priceList;
+  this._taxRate = 8.64;
+  this._currentOrder = {};
+  this._applyMuffinDiscount = false;
+  this._applyOver50Discount = false;
 };
 
 Till.prototype.add = function (item) {
-  if (this.currentOrder[item]) { this.currentOrder[item] += 1;
+  if (this._currentOrder[item]) { this._currentOrder[item] += 1;
     } else {
-    this.currentOrder[item] = 1;
+    this._currentOrder[item] = 1;
   }
-};
-
-Till.prototype.applyAnyDiscounts = function () {
-  var totalDiscount;
-  totalDiscount = 0;
-  if (this.applyMuffinDiscount) {
-    totalDiscount += this.calculateMuffinDiscount();
-  }
-  if (this.over50Discount) {
-    totalDiscount += this.calculateOver50Discount();
-  }
-  return totalDiscount;
 };
 
 Till.prototype.getTotal = function () {
-  var total;
-  total = this.sumCurrentOrder() - this.applyAnyDiscounts();
+  var total = this._sumCurrentOrder() - this._applyAnyDiscounts();
   return total.toFixed(2);
-};
-
-Till.prototype.sumCurrentOrder = function () {
-  var total;
-  var key;
-  total = 0;
-  for (key in this.currentOrder) {
-    total += this.priceList[0].prices[0][key] * this.currentOrder[key];
-  }
-  return total;
-};
-
-Till.prototype.calculateMuffinDiscount = function () {
-  var totalDiscount;
-  var itemTotal;
-  var key;
-  totalDiscount = 0;
-
-  for (key in this.currentOrder) {
-    if (key.includes("Muffin")) {
-      itemTotal = this.priceList[0].prices[0][key] * this.currentOrder[key];
-      totalDiscount += (itemTotal / 100) * 10;
-    }
-  }
-  return totalDiscount;
-};
-
-Till.prototype.calculateOver50Discount = function () {
-  var total;
-  total = this.sumCurrentOrder();
-  if (total > 50) {
-    return (total / 100) * 5;
-  }
-  return 0;
-};
-
-Till.prototype.getTax = function () {
-  var tax = (this.getTotal() / 100) * this.taxRate;
-  return tax.toFixed(2);
-};
-
-Till.prototype.getLineTotals = function () {
-  var returnString;
-  var key;
-
-  returnString = "";
-  for (key in this.currentOrder) {
-    returnString += key + " " + this.currentOrder[key] + " x " + this.priceList[0].prices[0][key].toFixed(2) + "\n";
-  }
-  return returnString;
 };
 
 Till.prototype.pay = function (amount) {
@@ -117,9 +51,65 @@ Till.prototype.pay = function (amount) {
 };
 
 Till.prototype.muffinDiscount = function () {
-  this.applyMuffinDiscount = true;
+  this._applyMuffinDiscount = true;
 };
 
 Till.prototype.over50Discount = function () {
-  this.applyOver50Discount = true;
+  this._applyOver50Discount = true;
+};
+
+Till.prototype._applyAnyDiscounts = function () {
+  var totalDiscount = 0;
+  if (this._applyMuffinDiscount) {
+    totalDiscount += this._calculateMuffinDiscount();
+  }
+  if (this.over50Discount) {
+    totalDiscount += this._calculateOver50Discount();
+  }
+  return totalDiscount;
+};
+
+Till.prototype._sumCurrentOrder = function () {
+  var key;
+  var total = 0;
+  for (key in this._currentOrder) {
+    total += this._priceList[0].prices[0][key] * this._currentOrder[key];
+  }
+  return total;
+};
+
+Till.prototype._calculateMuffinDiscount = function () {
+  var itemTotal;
+  var key;
+  var totalDiscount = 0;
+
+  for (key in this._currentOrder) {
+    if (key.includes("Muffin")) {
+      itemTotal = this._priceList[0].prices[0][key] * this._currentOrder[key];
+      totalDiscount += (itemTotal / 100) * 10;
+    }
+  }
+  return totalDiscount;
+};
+
+Till.prototype._calculateOver50Discount = function () {
+  var total = this._sumCurrentOrder();
+  if (total > 50) {
+    return (total / 100) * 5;
+  }
+  return 0;
+};
+
+Till.prototype._getTax = function () {
+  var tax = (this.getTotal() / 100) * this._taxRate;
+  return tax.toFixed(2);
+};
+
+Till.prototype._getLineTotals = function () {
+  var key;
+  var returnString = "";
+  for (key in this._currentOrder) {
+    returnString += key + " " + this._currentOrder[key] + " x " + this._priceList[0].prices[0][key].toFixed(2) + "\n";
+  }
+  return returnString;
 };
